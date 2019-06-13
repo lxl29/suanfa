@@ -1,0 +1,50 @@
+//求会场 一定要维护活动的优先级 这样才能来求最少的会场数 在这里我只想到了用优先队列来解
+#include <iostream>
+#include <cstdio>
+#include <queue>
+#include <stack>
+#include <cstring>
+#include <algorithm>
+using namespace std;
+#define inf 1000000005
+#define LL long long
+int const N = 10005;
+struct F
+{
+LL s,e;
+bool operator < (const F& u)const
+{
+return e>u.e ; //小值优先
+}
+}a[N];
+bool cmp(struct F aa,struct F bb)//按开始时间排序写
+{
+if(aa.s==bb.s)
+return aa.e<bb.e;
+return aa.s<bb.s;
+}
+int main(){
+int n;
+cin>>n;
+for(int i=0;i<n;i++)
+cin>>a[i].s>>a[i].e;
+sort(a,a+n,cmp);//按活动开始时间排序
+int maxx,counts=0;
+priority_queue<F> q; //创一个优先队列
+while(!q.empty()) //清空队列
+q.pop();
+q.push(a[0]);
+for(int i=1;i<n;i++){
+F tmp = q.top();
+q.pop();
+if(a[i].s<tmp.e){ //需要新增会场 将活动入队 以前的活动也要入队
+counts++;
+q.push(a[i]);
+q.push(tmp);
+}
+else //不需要新增会场 则只需要将这个活动入队来顶替之前的活动
+q.push(a[i]);
+}
+cout<<counts+1<<endl;
+return 0;
+}
